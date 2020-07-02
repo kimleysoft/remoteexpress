@@ -1,0 +1,103 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.xiang.server.exmapper.ExRemoteHistoryMapper">
+<resultMap id="BaseResultMap" type="com.xiang.bean.po.RemoteHistory">
+    <id column="id" jdbcType="CHAR" property="id" />
+    <result column="gmt_modified" jdbcType="TIMESTAMP" property="gmtModified" />
+    <result column="gmt_create" jdbcType="TIMESTAMP" property="gmtCreate" />
+    <result column="del" jdbcType="BIT" property="del" />
+    <result column="userid" jdbcType="BIGINT" property="userid" />
+    <result column="remoteid" jdbcType="BIGINT" property="remoteid" />
+    <result column="userip" jdbcType="VARCHAR" property="userip" />
+    <result column="user_name" jdbcType="VARCHAR" property="userName" />
+  </resultMap>
+<sql id="Base_Column_List">
+    id
+    ,del
+    ,userid
+    ,remoteid
+    ,userip
+    ,gmt_modified
+    ,gmt_create
+</sql>
+<select id="selectByConditionDO" parameterType="com.xiang.bean.bo.RemoteHistoryBo" resultType="com.xiang.bean.vo.RemoteHistoryVo">
+    SELECT u.id userId, u.del userDel, u.user_name userName, u.nick userNick,  
+     u.gmt_modified userGmtModified,u.gmt_create userGmtCreate, 
+    u.group_id groupId,rh.id id,rh.del del,rh.gmt_create gmtCreate,rh.gmt_modified gmtModified,
+    rh.remoteid remoteid,rh.userip userip,r.del remotedel,
+    r.account remoteaccount,r.gmt_create remoteGmtCreate,r.groupid remoteGroupId,r.ip remoteip,
+    r.localip remotelocalip,r.localport remotelocalport,r.password remotepassword,r.port remoteport,
+    r.remark remoteremark 
+    FROM remote_history rh 
+    LEFT JOIN remote r ON r.id=rh.remoteid 
+    LEFT JOIN user u ON rh.userid=u.id 
+   	<where>
+		<include refid="query_relation_where" />
+	</where>
+    <if test="order_by != null">
+    	order by ${order_by}
+    </if>
+    <if test="page != null &amp; rows != null">
+		limit #{page},#{rows}
+	</if>
+</select>
+   <sql id="query_relation_where">
+	   		<if test="userId != null">
+	   			AND u.id = #{userId}
+	   		</if>
+	   		<if test="userDel != null">
+	   			AND u.del = #{userDel}
+	   		</if>
+	   		<if test="userName != null">
+	   			AND u.user_name = #{userName}
+	   		</if>
+	   		<!-- <if test="createTimeStart != null &amp; createTimeEnd != null">
+	   			AND gsr.create_time <![CDATA[ >= ]]> #{createTimeStart} AND gsr.create_time <![CDATA[ <= ]]> #{createTimeEnd}
+	   		</if> -->
+	   		<if test="userNick != null">
+	   			AND u.nick = #{userNick}
+	   		</if>
+	   		<if test="userRoles != null">
+	   			AND u.roles = #{userRoles}
+	   		</if>
+	   		<if test="groupId != null">
+	   			AND u.group_id = #{groupId}
+	   		</if>
+	   		<if test="id != null">
+	   			AND rh.id = #{id}
+	   		</if>
+	   		<if test="del != null">
+	   			AND rh.del = #{del}
+	   		</if>
+	   		<if test="remoteid != null">
+	   			AND rh.remoteid = #{remoteid}
+	   		</if>
+	   		<if test="userip != null">
+	   			AND rh.userip = #{userip}
+	   		</if>
+	   		<if test="remoteaccount != null">
+	   			AND r.account = #{remoteaccount}
+	   		</if>
+	   		<if test="remoteGroupId != null">
+	   			AND r.groupid = #{remoteGroupId}
+	   		</if>
+	   		<if test="remoteip != null">
+	   			AND r.ip = #{remoteip}
+	   		</if>
+	   		<if test="remotelocalip != null">
+	   			AND r.localip = #{remotelocalip}
+	   		</if>
+	   		<if test="remotelocalport != null">
+	   			AND r.localport = #{remotelocalport}
+	   		</if>
+	   		<if test="remotepassword != null">
+	   			AND r.password = #{remotepassword}
+	   		</if>
+	   		<if test="remoteport != null">
+	   			AND r.port = #{remoteport}
+	   		</if>
+	   		<if test="remoteremark != null">
+	   			AND r.remark = #{remoteremark}
+	   		</if>
+  </sql>
+</mapper>

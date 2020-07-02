@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.xiang.server.savemapper.SaveLoginHistoryMapper">
+<sql id="Base_Column_List">
+    id
+    ,del
+    ,userid
+    ,nick
+    ,user_name
+    ,loginip
+    ,gmt_modified
+    ,gmt_create
+    ,operating_system
+    ,ref_type
+</sql>
+  <insert id="save" parameterType="com.xiang.bean.po.LoginHistory">
+    insert into login_history (
+     <include refid="Base_Column_List" />
+      )
+    values (
+    #{id,jdbcType=BIGINT,typeHandler=com.xiang.mybatis.typehandler.SaveTypeHandler}
+    ,#{del,jdbcType=BIT,typeHandler=com.xiang.mybatis.typehandler.SaveTypeHandler}
+    ,#{userid,jdbcType=BIGINT,typeHandler=com.xiang.mybatis.typehandler.SaveTypeHandler}
+    ,#{nick,jdbcType=VARCHAR,typeHandler=com.xiang.mybatis.typehandler.SaveTypeHandler}
+    ,#{userName,jdbcType=VARCHAR,typeHandler=com.xiang.mybatis.typehandler.SaveTypeHandler}
+    ,#{loginip,jdbcType=VARCHAR,typeHandler=com.xiang.mybatis.typehandler.SaveTypeHandler}
+    ,#{gmtModified,jdbcType=TIMESTAMP,typeHandler=com.xiang.mybatis.typehandler.SaveTypeHandler}
+    ,#{gmtCreate,jdbcType=TIMESTAMP,typeHandler=com.xiang.mybatis.typehandler.SaveTypeHandler}
+    ,#{operatingSystem,jdbcType=VARCHAR,typeHandler=com.xiang.mybatis.typehandler.SaveTypeHandler}
+    ,#{refType,jdbcType=INTEGER,typeHandler=com.xiang.mybatis.typehandler.SaveTypeHandler}
+      )
+  </insert>
+</mapper>

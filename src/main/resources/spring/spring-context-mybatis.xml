@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:tx="http://www.springframework.org/schema/tx"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans 
+						http://www.springframework.org/schema/beans/spring-beans.xsd
+						http://www.springframework.org/schema/tx 
+	                    http://www.springframework.org/schema/tx/spring-tx.xsd">
+	<import resource="spring-context-jdbc.xml" />
+
+	<bean class="org.mybatis.spring.mapper.MapperScannerConfigurer">
+			<property name="basePackage"
+			value="com.xiang.server.exmapper,com.xiang.server.savemapper,com.xiang.server.mapper" />
+	</bean>
+	<bean id="tenantInterceptor"
+		class="com.baomidou.mybatisplus.extension.plugins.PaginationInterceptor"></bean>
+	
+	<bean id="pageInterceptor"
+		class="com.github.pagehelper.PageInterceptor">
+		 <property name="properties">
+		 <value>
+            helperDialect=mysql
+           defaultCount=false
+          </value>
+            </property>
+	</bean>
+	
+	<bean id="baseMetaObjectHandler" class="com.xiang.base.BaseMetaObjectHandler"></bean>
+	<bean id="globalConfig" class="com.baomidou.mybatisplus.core.config.GlobalConfig">
+    <property name="metaObjectHandler" ref="baseMetaObjectHandler"/>
+</bean>
+	<beans profile="development">
+		<bean id="sqlSessionFactory"
+			class="com.baomidou.mybatisplus.extension.spring.MybatisSqlSessionFactoryBean">
+			<property name="dataSource" ref="dataSource" />
+			<property name="globalConfig" ref="globalConfig"/> 
+			<property name="typeHandlersPackage" value="com.xiang.mybatis.typehandler"/>
+			<property name="configLocation"
+				value="classpath:development/mybatis-config.xml"></property>
+			<property name="plugins">
+				<list>
+				<ref bean="tenantInterceptor" />
+					<ref bean="pageInterceptor" />
+				</list>
+			</property>
+			
+		</bean>
+	</beans>
+	<beans profile="production">
+		<bean id="sqlSessionFactory"
+			class="com.baomidou.mybatisplus.extension.spring.MybatisSqlSessionFactoryBean">
+			<property name="dataSource" ref="dataSource" />
+			<property name="globalConfig" ref="globalConfig"/> 
+			<property name="configLocation"
+				value="classpath:production/mybatis-config.xml"></property>
+			<property name="plugins">
+				<list>
+					<ref bean="tenantInterceptor" />
+					<ref bean="pageInterceptor" />
+				</list>
+			</property>
+		</bean>
+	</beans>
+</beans>

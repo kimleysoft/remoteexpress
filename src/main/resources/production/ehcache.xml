@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ehcache>
+    <!-- 指定一个文件目录，当EhCache把数据写到硬盘上时，将把数据写到这个文件目录下 -->
+    <diskStore path="/home/cache"/>
+    <!-- 设定缓存的默认数据过期策略 -->
+    <defaultCache
+            maxElementsInMemory="10000"
+            eternal="false"
+            timeToIdleSeconds="120"
+            timeToLiveSeconds="120"
+            maxElementsOnDisk="10000000"
+            diskExpiryThreadIntervalSeconds="120"
+            memoryStoreEvictionPolicy="LRU">
+        <persistence strategy="localTempSwap"/>
+    </defaultCache>
+    <cache name="userCache"
+        maxElementsInMemory="10000"
+        eternal="false"
+        overflowToDisk="false"
+        timeToIdleSeconds="4"
+        timeToLiveSeconds="4"
+        diskPersistent="false"
+        />
+        <cache name="unitCache"
+        maxElementsInMemory="10000"
+        eternal="false"
+        overflowToDisk="false"
+        diskPersistent="false"
+        />
+        <cache name="replyMessageCache"
+        maxElementsInMemory="10000"
+        eternal="false"
+        overflowToDisk="false"
+        timeToLiveSeconds="60"
+        diskPersistent="false"
+        />
+        <cache name="pageCache"
+        maxElementsInMemory="10000"
+        eternal="false"
+        overflowToDisk="false"
+        diskPersistent="false"
+        />
+        <cache name="productCache"
+        maxElementsInMemory="50000"
+        eternal="false"
+        overflowToDisk="false"
+        diskPersistent="false"
+        />
+</ehcache>

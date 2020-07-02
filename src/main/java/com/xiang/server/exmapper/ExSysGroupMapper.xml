@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.xiang.server.exmapper.ExSysGroupMapper">
+<sql id="Base_Column_List">
+    id
+    ,del
+    ,alias
+    ,typeflag
+    ,remark
+    ,gmt_modified
+    ,gmt_create
+</sql>
+<insert id="batchSave" parameterType="com.xiang.bean.po.SysGroup">
+    insert into sys_group (
+     <include refid="Base_Column_List" />
+      )
+    values 
+    <foreach collection="records" item="r" separator=",">
+        (#{r.id,jdbcType=BIGINT,typeHandler=com.xiang.mybatis.typehandler.SaveTypeHandler}
+	    ,#{r.del,jdbcType=BIT,typeHandler=com.xiang.mybatis.typehandler.SaveTypeHandler}
+	    ,#{r.alias,jdbcType=VARCHAR,typeHandler=com.xiang.mybatis.typehandler.SaveTypeHandler}
+	    ,#{r.typeflag,jdbcType=INTEGER,typeHandler=com.xiang.mybatis.typehandler.SaveTypeHandler}
+	    ,#{r.remark,jdbcType=VARCHAR,typeHandler=com.xiang.mybatis.typehandler.SaveTypeHandler}
+	    ,#{r.gmtModified,jdbcType=TIMESTAMP,typeHandler=com.xiang.mybatis.typehandler.SaveTypeHandler}
+	    ,#{r.gmtCreate,jdbcType=TIMESTAMP,typeHandler=com.xiang.mybatis.typehandler.SaveTypeHandler})
+      </foreach>
+  </insert>
+</mapper>

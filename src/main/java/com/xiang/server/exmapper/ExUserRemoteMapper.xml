@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.xiang.server.exmapper.ExUserRemoteMapper">
+  <resultMap id="BaseResultMap" type="com.xiang.bean.po.UserRemote">
+    <id column="id" jdbcType="BIGINT" property="id" />
+    <result column="del" jdbcType="BIT" property="del" />
+    <result column="userid" jdbcType="BIGINT" property="userid" />
+    <result column="remoteid" jdbcType="BIGINT" property="remoteid" />
+    <result column="user_name" jdbcType="VARCHAR" property="userName" />
+    <result column="account" jdbcType="VARCHAR" property="account" />
+    <result column="password" jdbcType="VARCHAR" property="password" />
+    <result column="remark" jdbcType="VARCHAR" property="remark" />
+    <result column="userip" jdbcType="VARCHAR" property="userip" />
+    <result column="gmt_modified" jdbcType="TIMESTAMP" property="gmtModified" />
+    <result column="gmt_create" jdbcType="TIMESTAMP" property="gmtCreate" />
+  </resultMap>
+<sql id="Base_Column_List">
+	id
+    ,del
+    ,userid
+    ,remoteid
+    ,user_name
+    ,account
+    ,password
+    ,remark
+    ,userip
+    ,gmt_modified
+    ,gmt_create
+</sql>
+<select id="selectByConditionDO" parameterType="com.xiang.bean.bo.UserRemoteBo" resultType="com.xiang.bean.vo.UserRemoteVo">
+   SELECT u.id userid,u.last_login_date lastlogindate,u.last_login_ip lastloginip,
+	u.nick nick,u.user_name username,r.id remoteid,r.account account,ur.password,r.groupid groupid,r.ip ip,
+	r.localip localip,r.localport localport,r.port port,r.remark remark FROM user_remote ur 
+	LEFT JOIN remote r ON r.id=ur.remoteid 
+	LEFT JOIN user u ON u.id=ur.userid
+   	<where>
+   	ur.del = 0 AND r.del = 0
+		<include refid="query_relation_where" />
+	</where>
+    <if test="order_by != null">
+    	order by ${order_by}
+    </if>
+    <if test="page != null &amp; rows != null">
+		limit #{page},#{rows}
+	</if>
+</select>
+   <sql id="query_relation_where">
+	   		<if test="userid != null">
+	   			AND u.id = #{userid}
+	   		</if>
+	   		<if test="remoteid != null">
+	   			AND r.id = #{remoteid}
+	   		</if>
+	   		 AND r.del=0 and ur.del=0
+  </sql>
+  
+  <insert id="batchSave" parameterType="com.xiang.bean.po.UserRemote">
+    insert into user_remote (
+     <include refid="Base_Column_List" />
+      )
+    values 
+    <foreach collection="records" item="r" separator=",">
+        (#{r.id,jdbcType=BIGINT,typeHandler=com.xiang.mybatis.typehandler.SaveTypeHandler}
+	    ,#{r.del,jdbcType=BIT,typeHandler=com.xiang.mybatis.typehandler.SaveTypeHandler}
+	    ,#{r.userid,jdbcType=BIGINT,typeHandler=com.xiang.mybatis.typehandler.SaveTypeHandler}
+	    ,#{r.remoteid,jdbcType=BIGINT,typeHandler=com.xiang.mybatis.typehandler.SaveTypeHandler}
+	    ,#{r.userName,jdbcType=VARCHAR,typeHandler=com.xiang.mybatis.typehandler.SaveTypeHandler}
+	    ,#{r.account,jdbcType=VARCHAR,typeHandler=com.xiang.mybatis.typehandler.SaveTypeHandler}
+	    ,#{r.password,jdbcType=VARCHAR,typeHandler=com.xiang.mybatis.typehandler.SaveTypeHandler}
+	    ,#{r.remark,jdbcType=VARCHAR,typeHandler=com.xiang.mybatis.typehandler.SaveTypeHandler}
+	    ,#{r.userip,jdbcType=VARCHAR,typeHandler=com.xiang.mybatis.typehandler.SaveTypeHandler}
+	    ,#{r.gmtModified,jdbcType=TIMESTAMP,typeHandler=com.xiang.mybatis.typehandler.SaveTypeHandler}
+	    ,#{r.gmtCreate,jdbcType=TIMESTAMP,typeHandler=com.xiang.mybatis.typehandler.SaveTypeHandler})
+      </foreach>
+  </insert>
+</mapper>

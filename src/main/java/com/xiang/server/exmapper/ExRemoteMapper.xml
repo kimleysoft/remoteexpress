@@ -1,0 +1,107 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.xiang.server.exmapper.ExRemoteMapper">
+	<resultMap id="BaseResultMap" type="com.xiang.bean.po.Remote">
+	    <id column="id" jdbcType="BIGINT" property="id" />
+	    <result column="del" jdbcType="BIT" property="del" />
+	    <result column="ip" jdbcType="VARCHAR" property="ip" />
+	    <result column="port" jdbcType="INTEGER" property="port" />
+	    <result column="clientType" jdbcType="INTEGER" property="client_type" />
+	    <result column="remark" jdbcType="VARCHAR" property="remark" />
+	    <result column="account" jdbcType="VARCHAR" property="account" />
+	    <result column="password" jdbcType="VARCHAR" property="password" />
+	    <result column="groupid" jdbcType="BIGINT" property="groupid" />
+	    <result column="localip" jdbcType="VARCHAR" property="localip" />
+	    <result column="localport" jdbcType="INTEGER" property="localport" />
+	    <result column="conne_break_flag" jdbcType="BIT" property="conneBreakFlag" />
+	    <result column="gmt_modified" jdbcType="TIMESTAMP" property="gmtModified" />
+	    <result column="gmt_create" jdbcType="TIMESTAMP" property="gmtCreate" />
+  </resultMap>
+<sql id="Base_Column_List">
+    id
+    ,del
+    ,ip
+    ,port
+    ,client_type
+    ,remark
+    ,account
+    ,password
+    ,groupid
+    ,localip
+    ,localport
+    ,gmt_modified
+    ,gmt_create
+</sql>
+
+<select id="statisticsRemoteOnLine" parameterType="com.xiang.bean.bo.RemoteBo" resultType="int">
+   SELECT count(*) from remote r 
+   	<where>
+   		AND r.client_type = 1
+		<include refid="query_relation_where" />
+	</where>
+    <if test="order_by != null">
+    	order by ${order_by}
+    </if>
+    <if test="page != null &amp; rows != null">
+		limit #{page},#{rows}
+	</if>
+</select>
+   <sql id="query_relation_where">
+	   		<if test="conneBreakFlag != null">
+	   			AND r.conne_break_flag = #{conneBreakFlag}
+	   		</if>
+	   		AND r.del=0
+  </sql>
+	<select id="groupbyPortCount" parameterType="java.lang.Long" resultType="com.xiang.bean.vo.RemotePortGroupVo">
+		SELECT `port`, count(1) AS count FROM remote 
+	  	<where>
+	  		`port` IN ( SELECT `port` FROM remote WHERE id in
+			<foreach close=")" collection="ids" item="id" open="("
+				separator=",">
+				#{id,jdbcType=BIGINT}
+			</foreach>)
+			and del = 0
+		</where>
+		GROUP BY `port` 
+  	</select>
+  	<select id="unRelatedRemote" resultMap="BaseResultMap">
+  		SELECT * FROM remote
+  		<where>
+  			groupid=#{groupid,jdbcType=BIGINT} 
+  			AND del = 0 
+  			AND id NOT IN ( SELECT remoteid FROM user_remote WHERE userid =#{userid,jdbcType=BIGINT} AND del = 0 );
+  			<if test="remark != null">
+  				AND remark like'%#{remark,jdbcType=VARCHAR} %'
+  			</if>
+  		</where>
+  	</select>
+  	<select id="existPort" parameterType="java.util.List" resultType="java.lang.Integer">
+  		SELECT DISTINCT `port` FROM remote WHERE `port` in
+		<foreach close=")" collection="ports" item="p" open="("
+			separator=",">
+			#{p,jdbcType=BIGINT}
+		</foreach>
+		and del = 0
+  	</select>
+  	<insert id="batchAdd" parameterType="com.xiang.bean.po.Remote">
+    insert into remote (
+     <include refid="Base_Column_List" />
+      )
+    values 
+    <foreach collection="records" item="r" separator=",">
+        (#{r.id,jdbcType=BIGINT,typeHandler=com.xiang.mybatis.typehandler.SaveTypeHandler}
+	    ,#{r.del,jdbcType=BIT,typeHandler=com.xiang.mybatis.typehandler.SaveTypeHandler}
+	    ,#{r.ip,jdbcType=VARCHAR,typeHandler=com.xiang.mybatis.typehandler.SaveTypeHandler}
+	    ,#{r.port,jdbcType=INTEGER,typeHandler=com.xiang.mybatis.typehandler.SaveTypeHandler}
+	    ,#{r.clientType,jdbcType=INTEGER,typeHandler=com.xiang.mybatis.typehandler.SaveTypeHandler}
+	    ,#{r.remark,jdbcType=VARCHAR,typeHandler=com.xiang.mybatis.typehandler.SaveTypeHandler}
+	    ,#{r.account,jdbcType=VARCHAR,typeHandler=com.xiang.mybatis.typehandler.SaveTypeHandler}
+	    ,#{r.password,jdbcType=VARCHAR,typeHandler=com.xiang.mybatis.typehandler.SaveTypeHandler}
+	    ,#{r.groupid,jdbcType=INTEGER,typeHandler=com.xiang.mybatis.typehandler.SaveTypeHandler}
+	    ,#{r.localip,jdbcType=VARCHAR,typeHandler=com.xiang.mybatis.typehandler.SaveTypeHandler}
+	    ,#{r.localport,jdbcType=INTEGER,typeHandler=com.xiang.mybatis.typehandler.SaveTypeHandler}
+	    ,#{r.gmtModified,jdbcType=TIMESTAMP,typeHandler=com.xiang.mybatis.typehandler.SaveTypeHandler}
+	    ,#{r.gmtCreate,jdbcType=TIMESTAMP,typeHandler=com.xiang.mybatis.typehandler.SaveTypeHandler})
+      </foreach>
+  </insert>
+</mapper>
