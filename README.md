@@ -76,12 +76,12 @@ mybatis-generator 是一个mybatis代码生成插件,该插件根据数据库的
 ![捐赠][donate-qrcode]
 
 <br>
-Copyright (c) 2020-present LovelyFeng
+Copyright (c) 2020-present kimleysoft
 
 
 
 
 
 [sql]:src/main/resources/RemoteExpress.sql
-[donate-qrcode]:https://LovelyFeng.github.io/donate/donation.png
-[changelog]:https://github.com/LovelyFeng/Remote-Express-Server/releases
+[donate-qrcode]:https://kimleysoft.github.io/donate/donation.png
+[changelog]:https://github.com/kimleysoft/Remote-Express-Server/releases
